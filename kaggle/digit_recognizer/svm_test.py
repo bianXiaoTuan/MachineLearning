@@ -2,9 +2,7 @@
 #_*_ encoding=utf-8 _*_
 
 import common
-
 import numpy as np
-import matplotlib.pyplot as plt
 
 from sklearn import svm
 from sklearn.decomposition import PCA
@@ -20,7 +18,7 @@ def run():
 
     # 拆分数据
     print 'Split Data'
-    x_train,x_test,y_train,y_test = train_test_split(x_train, y_train, test_size=0.01, random_state=0)
+    x_train,x_test,y_train,y_test = train_test_split(x_train, y_train, test_size=0.3, random_state=0)
 
     # NUM = 1000
     # x_train = x_train[0:NUM, :]
@@ -40,26 +38,24 @@ def run():
 
     # SVM
     print 'SVM'
-    # svc = svm.SVC(C=1.0, kernel='linear')
     svc = svm.SVC()
 
     # Grid Search Train
     print 'Grid Search'
 
-    # Model
-    # kernels = ['linear', 'poly', 'rbf', 'sigmoid']
-    # clf = GridSearchCV(estimator=svc, param_grid=dict(kernel=kernels), n_jobs=-1)
+    param_grid = [ {
+		'C': np.logspace(-3, 2, 10),
+		'gamma': np.logspace(-3, 2, 10),
+		'kernel': ['rbf']
+	}]
 
-    # C
-    Cs = np.logspace(-6, 2, 50)
-    clf = GridSearchCV(estimator=svc, param_grid=dict(C=Cs), n_jobs=-1)
+    clf = GridSearchCV(estimator=svc, param_grid=param_grid, n_jobs=-1)
     clf.fit(x_train, y_train)
 
+    # Scores
     print 'Scores'
     print clf.best_score_
-    print clf.best_estimator_.kernel    # 效果最好C
-    print clf.best_estimator_.C    # 效果最好C
-
+    print clf.best_params_
     print clf.score(x_test, y_test)
 
 if __name__ == '__main__':
