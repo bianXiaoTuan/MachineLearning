@@ -20,21 +20,21 @@ def run():
     print 'Split Data'
     x_train,x_test,y_train,y_test = train_test_split(x_train, y_train, test_size=0.3, random_state=0)
 
-    # NUM = 1000
-    # x_train = x_train[0:NUM, :]
-    # y_train = y_train[0:NUM]
+    MAX = 100
+    x_train = x_train[1:MAX]
+    y_train = y_train[1:MAX]
 
-    # x_test = x_train[-20:, :]
-    # y_test = y_train[-20:]
+    x_test = x_test[1:MAX]
+    y_test = y_test[1:MAX]
 
     # 降维度
-    print 'PCA'
-    COMPONENT_NUM = 50
-    pca = PCA(n_components=COMPONENT_NUM, whiten=True)
-    pca.fit(x_train)
+    # print 'PCA'
+    # COMPONENT_NUM = 50
+    # pca = PCA(n_components=COMPONENT_NUM, whiten=True)
+    # pca.fit(x_train)
 
-    x_train = pca.transform(x_train)
-    x_test = pca.transform(x_test)
+    # x_train = pca.transform(x_train)
+    # x_test = pca.transform(x_test)
 
     # SVM
     print 'SVM'
@@ -44,8 +44,8 @@ def run():
     print 'Grid Search'
 
     param_grid = [ {
-		'C': np.logspace(-3, 2, 10),
-		'gamma': np.logspace(-3, 2, 10),
+		'C': np.logspace(-3, 2, 5),
+		'gamma': np.logspace(-3, 2, 5),
 		'kernel': ['rbf']
 	}]
 
