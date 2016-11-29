@@ -3,9 +3,7 @@
 # SVM训练
 
 import common
-
 import numpy as np
-import matplotlib.pyplot as plt
 
 from sklearn.svm import SVC
 from sklearn.decomposition import PCA
@@ -18,12 +16,8 @@ def run():
     x_train = np.array(x_train)
     y_train = np.array(y_train)
 
-    # 每一幅图旋转90, 180, 270，扩充训练集
-    x_train,y_train = common.rotate(x_train, y_train)
-
-    # 拆分数据
-    print 'Split Data'
-    x_train,x_test,y_train,y_test = train_test_split(x_train, y_train, test_size=0.3, random_state=0)
+    # # 每一幅图旋转90, 180, 270，扩充训练集
+    # x_train,y_train = common.rotate(x_train, y_train)
 
     # 降维度
     print 'PCA'
@@ -32,31 +26,26 @@ def run():
     pca.fit(x_train)
 
     x_train = pca.transform(x_train)
-    x_test = pca.transform(x_test)
 
     # SVM 训练
     print 'SVM Training'
-    # svc = SVC(kernel='sigmoid', C=1.0, gamma='auto')
-    svc = SVC()
+    svc = SVC(kernel='rbf', C=7.7426368268112773, gamma=0.01291549665014884)
     svc.fit(x_train, y_train)
 
     # 预测打分
     print 'SVM Predict'
-
-    predict = svc.score(x_test, y_test)
-    print 'Test %f\n' % predict
-
     predict = svc.score(x_train, y_train)
     print 'Train %f\n' % predict
 
-    # # 载入测试数据
-    # print 'Load Test Data'
-    # x_test = common.load_test_data('./data/test.csv')
-    # x_test = np.array(x_test)
-    # x_test = pca.transform(x_test)
+    # 载入测试数据
+    print 'Load Test Data'
+    x_test = common.load_test_data('./data/test.csv')
+    x_test = np.array(x_test)
+    x_test = pca.transform(x_test)
 
-    # # 保存结果
-    # common.save_predict('./data/predict_svm.csv', predict)
+    # 保存结果
+    predict = svc.predict(x_test)
+    common.save_predict('./data/predict_svm.csv', predict)
 
 if __name__ == '__main__':
     run()
