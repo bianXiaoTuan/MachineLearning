@@ -1,16 +1,16 @@
 训练集包含项
-* PassengerId: 乘客编号
+* PassengerId: 乘客编号(丢弃)
 * Survived: 是否幸存
-* Pclass: 乘客级别((1 = 1st; 2 = 2nd; 3 = 3rd), 体现乘客社会地位
-* Name: 名字
-* Sex: 性别
-* Age: 年龄
-* SibSp: 船上兄弟姐妹/配偶的人数
-* Parch: 船上父母/子女的人数
-* Ticket: 船票号码
-* Fare: 旅客票价
+* Pclass: 乘客级别((1 = 1st; 2 = 2nd; 3 = 3rd)(地位越高, 生存几率越大)
+* Name: 名字(丢弃)
+* Sex: 性别(Female生存几率大)
+* Age: 年龄(年纪小和大的生存几率大)
+* SibSp: 船上兄弟姐妹/配偶的人数(人数越多生存几率越小)
+* Parch: 船上父母/子女的人数(人数越多生存几率越小)
+* Ticket: 船票号码(丢弃)
+* Fare: 旅客票价(票价越高生存几率越大)
 * Cabin: 船舱
-* Embarked: 上船港口(C = Cherbourg; Q = Queenstown; S = Southampton)
+* Embarked: 上船港口(C = Cherbourg; Q = Queenstown; S = Southampton)(丢弃)
 
 train.csv例子:
 
