@@ -9,7 +9,7 @@
 * Parch: 船上父母/子女的人数(人数越多生存几率越小)
 * Ticket: 船票号码(丢弃)
 * Fare: 旅客票价(票价越高生存几率越大)
-* Cabin: 船舱
+* Cabin: 船舱(丢弃)
 * Embarked: 上船港口(C = Cherbourg; Q = Queenstown; S = Southampton)(丢弃)
 
 train.csv例子:

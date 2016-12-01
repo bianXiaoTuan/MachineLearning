@@ -10,6 +10,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 # machine learning
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC, LinearSVC
 from sklearn.ensemble import RandomForestClassifier
@@ -22,36 +23,6 @@ def load_data():
 	titanic_df = pd.read_csv('./data/train.csv')
 	test_df    = pd.read_csv('./data/test.csv')
 	return titanic_df,test_df	
-
-def drop_columns(df, columns):
-	''' 删除无用字段
-	'''
-	return df.drop(columns, axis = 1)
-
-def analysis_embarked(titanic_df):
-	''' 分析Embarked Featrue
-
-	发现三个港口生存和死亡比例相当, 可以推断对生存率没有啥影响
-	'''
-	# 港口分布
-	embarked_counts = titanic_df['Embarked'].value_counts()
-
-	# Survived
-	survived = titanic_df[titanic_df.Survived == 1]
-	survived_counts = survived['Embarked'].value_counts()
-
-	# Dead分布
-	dead = titanic_df[titanic_df.Survived == 0]
-	dead_counts = dead['Embarked'].value_counts()
-
-	# 展示
-	fig,axes = plt.subplots(nrows=1, ncols=3)
-
-	embarked_counts.plot(kind='bar', ax=axes[0]); axes[0].set_title('embarked')
-	survived_counts.plot(kind='bar', ax=axes[1]); axes[1].set_title('survived')
-	dead_counts.plot(kind='bar', ax=axes[2]); axes[2].set_title('dead')
-
-	plt.show()	
 
 def label_analysis(titanic_df, feature):
 	''' 对feature中label量进行分析
@@ -89,9 +60,10 @@ def numeric_analysis(titanic_df, feature, num=10):
 	titanic_df[feature] = titanic_df[feature].astype(int)
 
 	# Bins
+	min = titanic_df.min()[feature]
 	max = titanic_df.max()[feature]
-	step = max / num if max > num else 1
-	bins = range(0, max + step, step)
+	step = (max - min) / num if (max - min) > num else 1
+	bins = range(min - step, max + step, step)
 
 	# Survived Counts
 	survived_cats = pd.cut(titanic_df[feature][titanic_df.Survived == 1], bins)
@@ -108,7 +80,9 @@ def numeric_analysis(titanic_df, feature, num=10):
 	result = pd.DataFrame(result, index=bins[1:]).fillna(0)
 
 	result.plot(kind='bar').set_title('%s Survived Rate' % feature)
-	plt.plot(bins, [0.5] * len(bins), color='r')    # 0.5 lines
+
+	# 50% standard line
+	plt.plot(bins, [0.5] * len(bins), color='r')
 
 	plt.show()
 
@@ -126,7 +100,40 @@ def run():
 	# label_analysis(titanic_df, 'Embarked')
 	# label_analysis(titanic_df, 'Pclass')
 	# label_analysis(titanic_df, 'Sex')
-	label_analysis(titanic_df, 'Cabin')
+	# label_analysis(titanic_df, 'Cabin')
+
+	titanic_df = titanic_df.drop(['PassengerId', 'Name', 'Ticket', 'Cabin', 'Embarked'],  axis=1)
+
+	# Keep Age
+	mean_age = titanic_df.mean()['Age']
+	titanic_df['Age'] = titanic_df['Age'].fillna(mean_age).astype(int)
+
+	# Fare
+	titanic_df['Fare'] = titanic_df['Fare'].astype(int)
+
+	# Sex
+	titanic_df.loc[titanic_df['Sex'] == 'female', 'Sex'] = 0
+	titanic_df.loc[titanic_df['Sex'] == 'male', 'Sex'] = 1
+
+	# SibSp and Parch -> Family
+	titanic_df['Family'] = titanic_df["Parch"] + titanic_df["SibSp"]
+	titanic_df.loc[titanic_df['Family'] > 0, 'Family'] = 1
+	titanic_df.loc[titanic_df['Family'] == 0, 'Family'] = 0
+
+	# Drop SibSp and Parch
+	titanic_df = titanic_df.drop(['SibSp','Parch'], axis=1)
+
+	X = titanic_df.drop("Survived",axis=1)
+	y = titanic_df["Survived"]
+
+	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+
+	logistic = LogisticRegression(C=1e5)
+	logistic.fit(X_train, y_train) 
+
+	# 打分 
+	print logistic.score(X_train, y_train)
+	print logistic.score(X_test, y_test)
 
 if __name__ == '__main__':
 	run()
