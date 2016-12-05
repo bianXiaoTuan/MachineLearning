@@ -86,7 +86,7 @@ def numeric_analysis(titanic_df, feature, num=10):
 
     plt.show()
 
-def feature_minning(titanic_df, test_df):
+def feature_mining(titanic_df, test_df):
     ''' Feature Minning
     '''
     titanic_df = titanic_df.drop(['PassengerId', 'Name', 'Ticket', 'Cabin', 'Embarked'],  axis=1)
@@ -107,13 +107,13 @@ def feature_minning(titanic_df, test_df):
     test_df['Fare'] = test_df['Fare'].fillna(mean_fare).astype(int)
 
     # Sex
-    titanic_df.loc[titanic_df['Sex'] == 'female', 'Sex'] = 0
-    titanic_df.loc[titanic_df['Sex'] == 'male', 'Sex'] = 1
-    titanic_df['Sex'].fillna(1)
+    # titanic_df.loc[titanic_df['Sex'] == 'female', 'Sex'] = 0
+    # titanic_df.loc[titanic_df['Sex'] == 'male', 'Sex'] = 1
+    # titanic_df['Sex'].fillna(1)
 
-    test_df.loc[test_df['Sex'] == 'female', 'Sex'] = 0
-    test_df.loc[test_df['Sex'] == 'male', 'Sex'] = 1
-    test_df['Sex'].fillna(1)
+    # test_df.loc[test_df['Sex'] == 'female', 'Sex'] = 0
+    # test_df.loc[test_df['Sex'] == 'male', 'Sex'] = 1
+    # test_df['Sex'].fillna(1)
 
     # SibSp and Parch -> Family
     titanic_df['Family'] = titanic_df["Parch"] + titanic_df["SibSp"]
@@ -166,17 +166,17 @@ def run():
     # 加载数据
     titanic_df,test_df = load_data()
 
-    # Feature加工
-    X,y = feature_minning(titanic_df)
+    # # Feature加工
+    # X,y = feature_minning(titanic_df)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
-    logistic = LogisticRegression(C=1e5)
-    logistic.fit(X_train, y_train) 
+    # logistic = LogisticRegression(C=1e5)
+    # logistic.fit(X_train, y_train) 
 
-    # 打分 
-    print logistic.score(X_train, y_train)
-    print logistic.score(X_test, y_test)
+    # # 打分 
+    # print logistic.score(X_train, y_train)
+    # print logistic.score(X_test, y_test)
 
 if __name__ == '__main__':
     run()
